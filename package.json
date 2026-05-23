@@ -1,0 +1,41 @@
+{
+  "name": "shune-lekha",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shune-Lekha desktop app foundation built with Electron, React, and TypeScript.",
+  "main": "dist-electron/main.js",
+  "scripts": {
+    "clean": "rimraf dist-electron app/electron/renderer/dist",
+    "build:main": "esbuild app/electron/main/index.ts --bundle --platform=node --format=cjs --outfile=dist-electron/main.js --external:electron",
+    "build:preload": "esbuild app/electron/preload/index.ts --bundle --platform=node --format=cjs --outfile=dist-electron/preload.js --external:electron",
+    "build:renderer:main": "esbuild app/electron/renderer/src/main.tsx --bundle --platform=browser --format=esm --outfile=app/electron/renderer/dist/main.js",
+    "build:renderer:overlay": "esbuild app/electron/renderer/src/overlay.tsx --bundle --platform=browser --format=esm --outfile=app/electron/renderer/dist/overlay.js",
+    "build:renderer": "npm run build:renderer:main && npm run build:renderer:overlay",
+    "build": "npm run clean && npm run build:main && npm run build:preload && npm run build:renderer",
+    "dev:main": "esbuild app/electron/main/index.ts --bundle --platform=node --format=cjs --outfile=dist-electron/main.js --external:electron --watch",
+    "dev:preload": "esbuild app/electron/preload/index.ts --bundle --platform=node --format=cjs --outfile=dist-electron/preload.js --external:electron --watch",
+    "dev:renderer:main": "esbuild app/electron/renderer/src/main.tsx --bundle --platform=browser --format=esm --outfile=app/electron/renderer/dist/main.js --watch",
+    "dev:renderer:overlay": "esbuild app/electron/renderer/src/overlay.tsx --bundle --platform=browser --format=esm --outfile=app/electron/renderer/dist/overlay.js --watch",
+    "dev:renderer": "concurrently -k \"npm:dev:renderer:main\" \"npm:dev:renderer:overlay\"",
+    "dev:electron": "wait-on dist-electron/main.js dist-electron/preload.js app/electron/renderer/dist/main.js app/electron/renderer/dist/overlay.js && electronmon .",
+    "dev": "concurrently -k \"npm:dev:main\" \"npm:dev:preload\" \"npm:dev:renderer\" \"npm:dev:electron\"",
+    "start": "npm run build && electron .",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.electron.json"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@types/react": "^18.3.23",
+    "@types/react-dom": "^18.3.7",
+    "concurrently": "^9.1.2",
+    "electron": "^35.5.1",
+    "electronmon": "^2.0.2",
+    "esbuild": "^0.25.5",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.8.3",
+    "wait-on": "^8.0.3"
+  }
+}

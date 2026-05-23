@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2022"],
+    "module": "CommonJS",
+    "types": ["node"]
+  },
+  "include": [
+    "app/electron/main/**/*.ts",
+    "app/electron/preload/**/*.ts"
+  ]
+}
